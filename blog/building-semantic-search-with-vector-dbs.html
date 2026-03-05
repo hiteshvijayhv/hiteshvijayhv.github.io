@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building Semantic Search in 10 Minutes | Hitesh Vijay</title>
+    <meta name="description" content="A practical guide to implementing semantic search using OpenAI embeddings and a vector database.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        background: '#0f172a',
+                        surface: '#1e293b',
+                        textMain: '#f8fafc',
+                        textMuted: '#94a3b8',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/app.css">
+</head>
+<body class="bg-background text-textMain font-sans antialiased selection:bg-primary selection:text-white">
+    <div class="max-w-3xl mx-auto px-6 py-12 md:py-20">
+        <!-- Navigation -->
+        <nav class="flex items-center justify-between mb-16">
+            <a href="/" class="text-xl font-bold tracking-tighter hover:text-primary transition-colors">HV.</a>
+            <div class="flex gap-6 text-sm font-medium">
+                <a href="/blog/" class="text-textMuted hover:text-textMain transition-colors">← Back to Blog</a>
+            </div>
+        </nav>
+
+        <article class="animate-fade-in-up">
+            <header class="mb-12">
+                <div class="flex items-center gap-3 text-sm font-mono text-primary mb-4">
+                    <span>Mar 02, 2026</span>
+                    <span>•</span>
+                    <span>7 min read</span>
+                </div>
+                <h1 class="text-3xl md:text-5xl font-bold tracking-tight mb-6 leading-tight">Building Semantic Search in 10 Minutes</h1>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-2.5 py-1 bg-surface rounded-md text-xs font-medium text-textMuted border border-slate-700">Python</span>
+                    <span class="px-2.5 py-1 bg-surface rounded-md text-xs font-medium text-textMuted border border-slate-700">Tutorial</span>
+                    <span class="px-2.5 py-1 bg-surface rounded-md text-xs font-medium text-textMuted border border-slate-700">OpenAI</span>
+                </div>
+            </header>
+
+            <div class="prose max-w-none text-lg">
+                <p>In the previous post, we discussed the theory behind vector databases. Today, we're going to write code. We will build a semantic search engine that can search through a set of documents based on their <em>meaning</em> rather than exact keywords.</p>
+                
+                <h2>The Stack</h2>
+                <ul>
+                    <li><strong>Language:</strong> Python 3.10+</li>
+                    <li><strong>Embeddings:</strong> OpenAI API (<code>text-embedding-3-small</code>)</li>
+                    <li><strong>Vector Database:</strong> ChromaDB (Runs locally, no setup required)</li>
+                </ul>
+
+                <h2>1. Setup and Dependencies</h2>
+                <p>First, let's install the necessary packages. You'll need an OpenAI API key for this.</p>
+                
+<pre><code>pip install chromadb openai python-dotenv</code></pre>
+
+                <h2>2. Initializing the Database</h2>
+                <p>ChromaDB is fantastic for prototyping because it can run entirely in-memory or save to a local sqlite file. Let's set it up and create a "collection" (similar to a table in SQL).</p>
+
+<pre><code>import chromadb
+from openai import OpenAI
+import os
+
+# Initialize OpenAI client
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+
+# Initialize ChromaDB locally
+chroma_client = chromadb.PersistentClient(path="./chroma_db")
+collection = chroma_client.get_or_create_collection(name="my_documents")
+</code></pre>
+
+                <h2>3. Generating Embeddings and Ingesting Data</h2>
+                <p>We need some sample data. Let's take a few sentences about different topics. We'll generate an embedding for each sentence using OpenAI, and then store the text alongside its vector representation in ChromaDB.</p>
+
+<pre><code>documents = [
+    "The new Mars rover collected rock samples from the crater.",
+    "Apple announced their latest M4 silicon chips today.",
+    "Baking sourdough bread requires a good starter and patience.",
+    "SpaceX successfully landed another reusable rocket.",
+    "A simple recipe for chocolate chip cookies."
+]
+
+# Helper function to get embeddings
+def get_embedding(text):
+    response = client.embeddings.create(
+        input=text,
+        model="text-embedding-3-small"
+    )
+    return response.data[0].embedding
+
+# Ingest data
+for i, doc in enumerate(documents):
+    vector = get_embedding(doc)
+    collection.add(
+        embeddings=[vector],
+        documents=[doc],
+        ids=[f"doc_{i}"]
+    )
+    
+print("Ingestion complete!")
+</code></pre>
+
+                <h2>4. Performing Semantic Search</h2>
+                <p>Now for the magic. We're going to search for something that doesn't share any exact keywords with our dataset. Let's search for "space exploration".</p>
+
+<pre><code>query = "advancements in space exploration"
+query_vector = get_embedding(query)
+
+results = collection.query(
+    query_embeddings=[query_vector],
+    n_results=2 # Get top 2 results
+)
+
+print(f"Query: {query}\n")
+for doc in results['documents'][0]:
+    print(f"- {doc}")
+</code></pre>
+
+                <h3>The Output:</h3>
+<pre><code>Query: advancements in space exploration
+
+- The new Mars rover collected rock samples from the crater.
+- SpaceX successfully landed another reusable rocket.
+</code></pre>
+
+                <h2>Conclusion</h2>
+                <p>Notice how our query <em>"advancements in space exploration"</em> didn't contain the words "Mars", "rover", or "SpaceX", yet the database accurately retrieved the two space-related sentences. This is the power of vector search.</p>
+                
+                <p>In a production scenario, you would swap ChromaDB for a distributed vector store like Milvus or Pinecone, and add chunking strategies for larger documents. But the core principle remains exactly the same.</p>
+            </div>
+        </article>
+        
+        <div class="mt-16 pt-8 border-t border-slate-800">
+            <div class="flex justify-between items-center">
+                <p class="text-textMuted">Thanks for reading!</p>
+                <a href="https://twitter.com/intent/tweet?text=Great%20tutorial%20on%20Semantic%20Search%20by%20@hiteshvijay" target="_blank" class="text-primary hover:underline text-sm font-medium">Share on Twitter</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

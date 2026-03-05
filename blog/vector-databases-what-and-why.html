@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vector Databases: The Engine of Modern AI | Hitesh Vijay</title>
+    <meta name="description" content="An introduction to vector databases, why relational databases aren't enough for AI, and how embeddings work.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        background: '#0f172a',
+                        surface: '#1e293b',
+                        textMain: '#f8fafc',
+                        textMuted: '#94a3b8',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/app.css">
+</head>
+<body class="bg-background text-textMain font-sans antialiased selection:bg-primary selection:text-white">
+    <div class="max-w-3xl mx-auto px-6 py-12 md:py-20">
+        <!-- Navigation -->
+        <nav class="flex items-center justify-between mb-16">
+            <a href="/" class="text-xl font-bold tracking-tighter hover:text-primary transition-colors">HV.</a>
+            <div class="flex gap-6 text-sm font-medium">
+                <a href="/blog/" class="text-textMuted hover:text-textMain transition-colors">← Back to Blog</a>
+            </div>
+        </nav>
+
+        <article class="animate-fade-in-up">
+            <header class="mb-12">
+                <div class="flex items-center gap-3 text-sm font-mono text-primary mb-4">
+                    <span>Feb 15, 2026</span>
+                    <span>•</span>
+                    <span>5 min read</span>
+                </div>
+                <h1 class="text-3xl md:text-5xl font-bold tracking-tight mb-6 leading-tight">Vector Databases: The Engine of Modern AI</h1>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-2.5 py-1 bg-surface rounded-md text-xs font-medium text-textMuted border border-slate-700">AI</span>
+                    <span class="px-2.5 py-1 bg-surface rounded-md text-xs font-medium text-textMuted border border-slate-700">Databases</span>
+                    <span class="px-2.5 py-1 bg-surface rounded-md text-xs font-medium text-textMuted border border-slate-700">Vector Search</span>
+                </div>
+            </header>
+
+            <div class="prose max-w-none text-lg">
+                <p>If you've been paying attention to the tech ecosystem lately, you've probably heard the term "Vector Database" thrown around everywhere. From OpenAI's latest features to the boom in Retrieval-Augmented Generation (RAG) applications, vector DBs are at the core.</p>
+                
+                <p>But what exactly are they, and why can't we just use Postgres for this?</p>
+
+                <h2>The Problem with Traditional Search</h2>
+                <p>Relational databases (like PostgreSQL or MySQL) and document stores (like MongoDB) are phenomenal at exactly matching data. If you query for <code>SELECT * FROM users WHERE age > 25</code>, you get deterministic results. Even with full-text search (like Elasticsearch), you are fundamentally matching keywords.</p>
+                
+                <p>But what happens when you want to search by <em>meaning</em>? What if a user searches for "a comfortable place to sit" and your database only contains the word "sofa"? A keyword search fails. This is the gap vector databases fill.</p>
+
+                <h2>Enter Embeddings</h2>
+                <p>To understand vector DBs, you must first understand embeddings. Machine learning models (like LLMs) translate data—text, images, audio—into arrays of numbers called vectors (or embeddings). These vectors represent the "meaning" of the data in high-dimensional space.</p>
+                
+                <blockquote>
+                    If two pieces of text have similar meanings, their vectors will be physically close to each other in this multidimensional mathematical space.
+                </blockquote>
+
+                <p>For example, the vector for "dog" and "puppy" will be very close. The vector for "car" will be far away.</p>
+
+                <h2>Why We Need Specialized Databases</h2>
+                <p>Comparing two arrays of 1,536 floating-point numbers (the size of an OpenAI embedding) is computationally cheap. Comparing <em>one</em> vector against <em>one billion</em> vectors to find the closest match (Nearest Neighbor Search) is computationally massive.</p>
+                
+                <p>Vector databases are purpose-built to solve this exact problem at scale. They use specialized indexing algorithms like <strong>HNSW (Hierarchical Navigable Small World)</strong> or <strong>IVF (Inverted File Index)</strong> to find Approximate Nearest Neighbors (ANN) in milliseconds, rather than seconds or minutes.</p>
+
+                <h2>When Should You Use One?</h2>
+                <ul>
+                    <li><strong>Semantic Search:</strong> Searching documents based on meaning rather than keywords.</li>
+                    <li><strong>Recommendation Systems:</strong> "Users who liked this item also liked..." (Items are represented as vectors).</li>
+                    <li><strong>RAG (Retrieval-Augmented Generation):</strong> Giving LLMs long-term memory by retrieving relevant context from a knowledge base before generating an answer.</li>
+                    <li><strong>Image/Audio Search:</strong> Searching for an image using another image, or searching audio by melody.</li>
+                </ul>
+
+                <h2>The Ecosystem Today</h2>
+                <p>The space is evolving rapidly. We have managed, purpose-built solutions like <strong>Pinecone</strong> and <strong>Weaviate</strong>. We have open-source powerhouses like <strong>Milvus</strong> and <strong>Qdrant</strong>. And we even have vector extensions for traditional DBs, like <strong>pgvector</strong> for PostgreSQL.</p>
+                
+                <p>In the next post, we'll get our hands dirty and build a semantic search engine from scratch using Python.</p>
+            </div>
+        </article>
+        
+        <div class="mt-16 pt-8 border-t border-slate-800">
+            <div class="flex justify-between items-center">
+                <p class="text-textMuted">Thanks for reading!</p>
+                <a href="https://twitter.com/intent/tweet?text=Reading%20this%20awesome%20post%20on%20Vector%20Databases%20by%20@hiteshvijay" target="_blank" class="text-primary hover:underline text-sm font-medium">Share on Twitter</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
