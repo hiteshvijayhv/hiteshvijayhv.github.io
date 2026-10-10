@@ -13,10 +13,10 @@
                 extend: {
                     colors: {
                         primary: '#3b82f6', // blue-500
-                        background: '#0f172a', // slate-900
-                        surface: '#1e293b', // slate-800
-                        textMain: '#f8fafc', // slate-50
-                        textMuted: '#94a3b8', // slate-400
+                        background: 'var(--bg)', // slate-900
+                        surface: 'var(--surface)', // slate-800
+                        textMain: 'var(--text-main)', // slate-50
+                        textMuted: 'var(--text-muted)', border: 'var(--border)', // slate-400
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
@@ -28,6 +28,7 @@
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/app.css">
+<script src="assets/theme.js"></script>
 </head>
 <body class="bg-background text-textMain font-sans antialiased selection:bg-primary selection:text-white">
     <div class="max-w-4xl mx-auto px-6 py-12 md:py-20">
@@ -36,6 +37,10 @@
             <a href="/" class="text-xl font-bold tracking-tighter hover:text-primary transition-colors">HV.</a>
             <div class="flex gap-6 text-sm font-medium">
                 <a href="/blog/" class="text-textMuted hover:text-textMain transition-colors">Blog</a>
+                            <button onclick="toggleTheme()" class="text-textMuted hover:text-textMain transition-colors ml-4" aria-label="Toggle Dark Mode">
+                    <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                </button>
             </div>
         </nav>
 
@@ -61,7 +66,7 @@
             </div>
             <div class="grid gap-6">
                 <!-- Post 1 -->
-                <a href="/blog/vector-databases-what-and-why.html" class="group block p-6 bg-surface rounded-xl border border-slate-700 hover:border-primary/50 transition-all hover:shadow-[0_0_20px_rgba(59,130,246,0.1)] hover:-translate-y-1">
+                <a href="/blog/vector-databases-what-and-why.html" class="group block p-6 bg-surface rounded-xl border border-border hover:border-primary/50 transition-all hover:shadow-[0_0_20px_rgba(59,130,246,0.1)] hover:-translate-y-1">
                     <div class="flex justify-between items-start mb-2">
                         <h3 class="text-xl font-semibold group-hover:text-primary transition-colors">Vector Databases: The Engine of Modern AI</h3>
                         <span class="text-sm text-textMuted font-mono">Feb 15, 2026</span>
@@ -70,7 +75,7 @@
                 </a>
                 
                 <!-- Post 2 -->
-                <a href="/blog/building-semantic-search-with-vector-dbs.html" class="group block p-6 bg-surface rounded-xl border border-slate-700 hover:border-primary/50 transition-all hover:shadow-[0_0_20px_rgba(59,130,246,0.1)] hover:-translate-y-1">
+                <a href="/blog/building-semantic-search-with-vector-dbs.html" class="group block p-6 bg-surface rounded-xl border border-border hover:border-primary/50 transition-all hover:shadow-[0_0_20px_rgba(59,130,246,0.1)] hover:-translate-y-1">
                     <div class="flex justify-between items-start mb-2">
                         <h3 class="text-xl font-semibold group-hover:text-primary transition-colors">Building Semantic Search in 10 Minutes</h3>
                         <span class="text-sm text-textMuted font-mono">Mar 02, 2026</span>
@@ -83,7 +88,7 @@
 
 
         <!-- Footer -->
-        <footer class="border-t border-slate-800 pt-8 mt-24 text-center sm:flex sm:justify-between sm:text-left">
+        <footer class="border-t border-border pt-8 mt-24 text-center sm:flex sm:justify-between sm:text-left">
             <p class="text-sm text-textMuted">© 2026 Hitesh Vijay. All rights reserved.</p>
             <div class="flex justify-center gap-4 mt-4 sm:mt-0 text-sm">
                 <a href="https://twitter.com/hiteshvijayhv" class="text-textMuted hover:text-textMain transition-colors">Twitter</a>
